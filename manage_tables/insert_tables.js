@@ -4,6 +4,7 @@ const {
   formatTopic,
   formatUser,
   formatArticle,
+  formatComment,
 } = require('../utils/format-table');
 
 exports.insertIntoTopics = (topicData) => {
@@ -43,12 +44,28 @@ exports.insertIntoArticles = (articleData) => {
   const queryFormat = format(
     `
     INSERT INTO articles
-    (title, topic, author, body, created_at, votes)
+    (title, topic, author, body, votes, created_at)
     VALUES
     %L
     RETURNING *;
     `,
     articleValues
+  );
+
+  return db.query(queryFormat);
+};
+
+exports.insertIntoComments = (commentData) => {
+  const commentValues = commentData.map(formatComment);
+  const queryFormat = format(
+    `
+    INSERT INTO comments
+    (article_id, author, body, votes, created_at)
+    VALUES
+    %L
+    RETURNING *;
+  `,
+    commentValues
   );
 
   return db.query(queryFormat);

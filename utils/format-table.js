@@ -12,7 +12,17 @@ exports.formatArticle = (article) => {
     article.topic,
     article.author,
     article.body,
-    article.created_at,
     article.votes,
+    article.created_at,
+  ];
+};
+
+exports.formatComment = (comment) => {
+  return [
+    comment.article_id,
+    comment.author,
+    comment.body,
+    comment.votes,
+    comment.created_at,
   ];
 };
