@@ -5,7 +5,11 @@ const {
   createArticlesTable,
   createCommentsTable,
 } = require('../../manage_tables/create_tables');
-const { insertIntoTopics } = require('../../manage_tables/insert_tables');
+const {
+  insertIntoTopics,
+  insertIntoUsers,
+  insertIntoArticles,
+} = require('../../manage_tables/insert_tables');
 
 const seed = (data) => {
   const { articleData, commentData, topicData, userData } = data;
@@ -18,7 +22,9 @@ const seed = (data) => {
     .then(() => createUsersTable())
     .then(() => createArticlesTable())
     .then(() => createCommentsTable())
-    .then(() => insertIntoTopics(topicData));
+    .then(() => insertIntoTopics(topicData))
+    .then(() => insertIntoUsers(userData))
+    .then(() => insertIntoArticles(articleData));
 };
 
 module.exports = seed;
