@@ -1,9 +1,9 @@
-const db = require('../db/connection');
+const db = require('../connection');
 
 exports.createTopicsTable = () => {
   return db.query(`
     CREATE TABLE IF NOT EXISTS topics (
-      slug TEXT NOT NULL UNIQUE,
+      slug TEXT PRIMARY KEY,
       description VARCHAR(250) NOT NULL
     )
   `);
