@@ -1,5 +1,5 @@
 const { checkArticleExists } = require('../db/utils/checkArticleExists');
-const { fetchArticle } = require('../models/articles.model');
+const { fetchArticle, editArticle } = require('../models/articles.model');
 
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -12,6 +12,23 @@ exports.getArticle = (req, res, next) => {
         });
       } else {
         return Promise.reject({ status: 404, message: 'Not Found' });
+      }
+    })
+    .catch(next);
+};
+
+exports.updateArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+
+  return checkArticleExists(article_id)
+    .then((articleExists) => {
+      if (articleExists && inc_votes) {
+        return editArticle(article_id, inc_votes).then((updatedArticle) =>
+          res.status(201).send({ updatedArticle })
+        );
+      } else {
+        return Promise.reject({ status: 400, message: 'Bad Request' });
       }
     })
     .catch(next);
