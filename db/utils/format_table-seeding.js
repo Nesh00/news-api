@@ -26,5 +26,3 @@ exports.formatComment = (comment) => {
     comment.created_at,
   ];
 };
-
-// rename file to format_seeding.js
