@@ -37,6 +37,83 @@ describe('/api/topics', () => {
   });
 });
 
+describe.only('/api/articles', () => {
+  describe('GET', () => {
+    test('SUCCESSFUL REQUEST - returns an array of article objects when all queries are passed', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=ASC&topic=mitch')
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test('SUCCESSFUL REQUEST - returns an array of article objects even when sort_by is omitted', () => {
+      return request(app)
+        .get('/api/articles?order=ASC&topic=mitch')
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test('SUCCESSFUL REQUEST - returns an array of article objects even when order is omitted', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&topic=mitch')
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+          });
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when topic is omitted', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=ASC')
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+  });
+});
+
 describe('/api/articles/:article_id', () => {
   describe('GET', () => {
     test('SUCCESSFUL REQUEST - if article_id is correct, will respond with the selected article object', () => {
