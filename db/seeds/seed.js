@@ -1,16 +1,16 @@
-const { dropTable } = require('../../manage_tables/drop_tables');
+const { dropTable } = require('../manage_tables/drop_tables');
 const {
   createTopicsTable,
   createUsersTable,
   createArticlesTable,
   createCommentsTable,
-} = require('../../manage_tables/create_tables');
+} = require('../manage_tables/create_tables');
 const {
   insertIntoTopics,
   insertIntoUsers,
   insertIntoArticles,
   insertIntoComments,
-} = require('../../manage_tables/insert_tables');
+} = require('../manage_tables/insert_tables');
 
 const seed = (data) => {
   const { articleData, commentData, topicData, userData } = data;
