@@ -3,8 +3,8 @@ const {
   editArticle,
   fetchArticles,
 } = require('../models/articles.model');
-const { checkArticleExists } = require('../db/utils/checkArticleExists');
-const { getTopics } = require('../db/utils/getTopics');
+const { checkArticleExists } = require('../utils/checkArticleExists.util');
+const { extractTopics } = require('../utils/extractTopics.util');
 
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -42,7 +42,7 @@ exports.updateArticle = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
   const { sort_by, order, topic } = req.query;
 
-  getTopics()
+  extractTopics()
     .then((topics) => {
       const topicValues = topics.map((topic) => topic.topic);
 

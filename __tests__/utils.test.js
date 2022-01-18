@@ -1,11 +1,12 @@
-const db = require('../db/connection.js');
-const { checkArticleExists } = require('../db/utils/checkArticleExists');
+const db = require('../db/connection');
+const { extractTopics } = require('../utils/extractTopics.util');
+const { checkArticleExists } = require('../utils/checkArticleExists.util');
 const {
   formatTopic,
   formatUser,
   formatArticle,
   formatComment,
-} = require('../db/utils/format_table-seeding.js');
+} = require('../utils/format_table-seeding.util.js');
 
 afterAll(() => db.end());
 
@@ -81,6 +82,40 @@ describe('checkArticleExists', () => {
   test('returns false if the article does not exist', () => {
     checkArticleExists('456').then((exists) => {
       expect(exists).toBe(false);
+    });
+  });
+});
+
+describe('extractTopics', () => {
+  test('should return an array of objects with no duplicate property values', () => {
+    const testTopics = [
+      {
+        title: 'UNCOVERED: catspiracy to bring down democracy',
+        topic: 'cats',
+        author: 'rogersop',
+        body: 'Bastet walks amongst us, and the cats are taking arms!',
+        created_at: new Date(1596464040000),
+        votes: 0,
+      },
+      {
+        title: 'A',
+        topic: 'mitch',
+        author: 'icellusedkars',
+        body: 'Delicious tin of cat food',
+        created_at: new Date(1602986400000),
+        votes: 0,
+      },
+      {
+        title: 'Moustache',
+        topic: 'mitch',
+        author: 'butter_bridge',
+        body: 'Have you seen the size of that thing?',
+        created_at: new Date(1602419040000),
+        votes: 0,
+      },
+    ];
+    extractTopics(testTopics).then((topics) => {
+      expect(topics).toEqual([{ topic: 'mitch' }, { topic: 'cats' }]);
     });
   });
 });

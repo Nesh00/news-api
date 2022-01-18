@@ -37,7 +37,7 @@ describe('/api/topics', () => {
   });
 });
 
-describe.only('/api/articles', () => {
+describe('/api/articles', () => {
   describe('GET', () => {
     test('SUCCESSFUL REQUEST - returns an array of article objects when all queries are passed', () => {
       return request(app)

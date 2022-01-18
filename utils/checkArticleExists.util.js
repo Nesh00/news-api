@@ -1,4 +1,4 @@
-const db = require('../connection');
+const db = require('../db/connection');
 
 exports.checkArticleExists = async (article_id) => {
   return await db

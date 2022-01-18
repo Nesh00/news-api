@@ -5,7 +5,7 @@ const {
   formatUser,
   formatArticle,
   formatComment,
-} = require('../utils/format_table-seeding');
+} = require('../../utils/format_table-seeding.util');
 
 exports.insertIntoTopics = (topicData) => {
   const topicValues = topicData.map(formatTopic);

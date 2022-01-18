@@ -1,6 +1,6 @@
-const db = require('../connection');
+const db = require('../db/connection');
 
-exports.getTopics = async () => {
+exports.extractTopics = async () => {
   const { rows } = await db.query(`SELECT DISTINCT(topic) FROM articles`);
 
   return rows;
