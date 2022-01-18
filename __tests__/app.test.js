@@ -7,7 +7,7 @@ const request = require('supertest');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe.only('/api/topics', () => {
+describe('/api/topics', () => {
   describe('GET', () => {
     test('GOOD REQUEST - if pathname is correct responds with an array of topic objects', () => {
       return request(app)
@@ -25,7 +25,7 @@ describe.only('/api/topics', () => {
           });
         });
     });
-    test('BAD REQUEST - if pathname is wrong responds with a status 404 and error message "Not Found"', () => {
+    test('BAD REQUEST - if pathname is wrong responds with a status 404 and error message"', () => {
       return request(app)
         .get('/api/topic')
         .expect(404)
@@ -37,24 +37,46 @@ describe.only('/api/topics', () => {
   });
 });
 
-// describe('/api/articles/:article_id', () => {
-//   describe('GET', () => {
-//     test('responds with the selected article object', () => {
-//       return request(app)
-//         .get('/api/articles/1')
-//         .expect(200)
-//         .then((res) => {
-//           const { selectedArticle } = res.body;
-//           expect(selectedArticle).toMatchObject({
-//             article_id: expect.any(Number),
-//             title: expect.any(String),
-//             topic: expect.any(String),
-//             author: expect.any(String),
-//             body: expect.any(String),
-//             votes: expect.any(Number),
-//             created_at: expect.any(String),
-//           });
-//         });
-//     });
-//   });
-// });
+describe.only('/api/articles/:article_id', () => {
+  describe('GET', () => {
+    test('GOOD REQUEST - if article_id is correct, will respond with the selected article object', () => {
+      return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then((res) => {
+          const { selectedArticle } = res.body;
+
+          expect(selectedArticle).toMatchObject([
+            {
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              comment_count: expect.any(Number),
+            },
+          ]);
+        });
+    });
+    test('BAD REQUEST - article_id non-existant but still valid, respond with 404 and error message', () => {
+      return request(app)
+        .get('/api/articles/564')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+    test('BAD REQUEST - article_id exists but no comments left on that id, respond with 404 and error message', () => {
+      return request(app)
+        .get('/api/articles/2')
+        .expect(200)
+        .then((res) => {
+          const { selectedArticle } = res.body;
+          expect(selectedArticle).toHaveLength(0);
+        });
+    });
+  });
+});
