@@ -4,6 +4,7 @@ const endpoints = require('../endpoints.json');
 const topicsRouter = require('./topics.router');
 const articlesRouter = require('./articles.router');
 const commentsRouter = require('./comments.router');
+const usersRouter = require('./users.router');
 
 apiRouter
   .get((req, res, next) => {
@@ -11,6 +12,7 @@ apiRouter
   })
   .use('/topics', topicsRouter)
   .use('/articles', articlesRouter)
-  .use('/comments', commentsRouter);
+  .use('/comments', commentsRouter)
+  .use('/users', usersRouter);
 
 module.exports = apiRouter;

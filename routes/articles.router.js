@@ -1,5 +1,4 @@
 const express = require('express');
-const articlesRouter = express.Router();
 const {
   getArticle,
   patchArticle,
@@ -8,6 +7,7 @@ const {
   postComment,
 } = require('../controllers/articles.controller');
 const { sanitazeParams } = require('../utils/sanitazeParams.util');
+const articlesRouter = express.Router();
 
 articlesRouter.route('/').get(getArticles);
 

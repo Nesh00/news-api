@@ -356,3 +356,57 @@ describe('/api/comments/:comment_id', () => {
     });
   });
 });
+
+describe('/api/users', () => {
+  describe('GET', () => {
+    test('SUCCESSFUL REQUEST - returns array of objects with property username', () => {
+      return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((res) => {
+          const { users } = res.body;
+
+          users.forEach((user) => {
+            expect(user).toMatchObject({ username: expect.any(String) });
+          });
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns error and message', () => {
+      return request(app)
+        .get('/api/user')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+  });
+});
+
+describe('/api/users/:username', () => {
+  describe('GET', () => {
+    test('SUCCESSFUL REQUEST - returns object from the selected username', () => {
+      return request(app)
+        .get('/api/users/rogersop')
+        .expect(200)
+        .then((res) => {
+          const { user } = res.body;
+          expect(user).toEqual({
+            username: 'rogersop',
+            name: 'paul',
+            avatar_url:
+              'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4',
+          });
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - username is non-existant but still valid, respond with 404 and error message', () => {
+      return request(app)
+        .get('/api/users/rogersopp')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+  });
+});
