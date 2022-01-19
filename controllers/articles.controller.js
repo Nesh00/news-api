@@ -4,7 +4,6 @@ const {
   fetchArticles,
   fetchCommentsByArticleId,
   insertComment,
-  removeComment,
 } = require('../models/articles.model');
 const { checkArticleExists } = require('../utils/checkArticleExists.util');
 const { extractTopics } = require('../utils/extractTopics.util');
@@ -26,7 +25,7 @@ exports.getArticle = (req, res, next) => {
     .catch(next);
 };
 
-exports.updateArticle = (req, res, next) => {
+exports.patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
 
@@ -69,7 +68,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
     .catch(next);
 };
 
-exports.addComment = (req, res, next) => {
+exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
 
