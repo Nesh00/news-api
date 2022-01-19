@@ -64,7 +64,7 @@ exports.insertIntoComments = (commentData) => {
     VALUES
     %L
     RETURNING *;
-  `,
+    `,
     commentValues
   );
 

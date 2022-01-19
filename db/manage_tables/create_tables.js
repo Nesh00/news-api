@@ -12,6 +12,7 @@ exports.createTopicsTable = () => {
 exports.createUsersTable = () => {
   return db.query(`
     CREATE TABLE IF NOT EXISTS users (
+      user_id SERIAL,
       username VARCHAR(50) PRIMARY KEY,
       name VARCHAR(50) NOT NULL,
       avatar_url TEXT NOT NULL
