@@ -7,10 +7,15 @@ const {
   getCommentsByArticleId,
   postComment,
 } = require('../controllers/articles.controller');
+const { sanitazeParams } = require('../utils/sanitazeParams.util');
 
 articlesRouter.route('/').get(getArticles);
 
-articlesRouter.route('/:article_id').get(getArticle).patch(patchArticle);
+articlesRouter
+  .route('/:article_id')
+  .all(sanitazeParams)
+  .get(getArticle)
+  .patch(patchArticle);
 
 articlesRouter
   .route('/:article_id/comments')
