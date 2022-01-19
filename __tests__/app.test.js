@@ -243,10 +243,10 @@ describe('/api/articles/:article_id/comments', () => {
     test('UNSUCCESSFUL REQUEST - returns an error and message when article_id is undefined', () => {
       return request(app)
         .get('/api/articles//comments')
-        .expect(404)
+        .expect(400)
         .then((res) => {
           const { message } = res.body;
-          expect(message).toBe('Not Found');
+          expect(message).toBe('Bad Request');
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error and message when last segment of URL is invalid', () => {
