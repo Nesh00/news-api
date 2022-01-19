@@ -323,3 +323,36 @@ describe('/api/articles/:article_id/comments', () => {
     });
   });
 });
+
+describe('/api/comments/:comment_id', () => {
+  describe('DELETE', () => {
+    test('SUCCESSFUL REQUEST - removes selected comment_id and returns no content', () => {
+      return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+        .then(() => {
+          return db.query(`SELECT * FROM comments`).then(({ rows }) => {
+            expect(rows.length).toBe(17);
+          });
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when the comment_id is valid but non-existant', () => {
+      return request(app)
+        .delete('/api/comments/100')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error when the comment_id is valid but non-existant', () => {
+      return request(app)
+        .delete('/api/comments/100')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+  });
+});

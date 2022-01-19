@@ -4,6 +4,7 @@ const {
   fetchArticles,
   fetchCommentsByArticleId,
   insertComment,
+  removeComment,
 } = require('../models/articles.model');
 const { checkArticleExists } = require('../utils/checkArticleExists.util');
 const { extractTopics } = require('../utils/extractTopics.util');
@@ -71,7 +72,6 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.addComment = (req, res, next) => {
   const { article_id } = req.params;
   const { username, body } = req.body;
-  const lastSegment = req.url.slice(req.url.lastIndexOf('/') + 1);
 
   extractUsers()
     .then((users) => {

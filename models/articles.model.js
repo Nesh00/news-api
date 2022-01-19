@@ -1,6 +1,5 @@
 const db = require('../db/connection');
 const format = require('pg-format');
-const { formatComment } = require('../utils/format_table-seeding.util');
 
 exports.fetchArticle = async (article_id) => {
   const { rows } = await db.query(
@@ -63,11 +62,12 @@ exports.fetchArticles = async (
     queryValues.push(topic);
     queryStr += `WHERE articles.topic = $1`;
   }
-
-  queryStr += ` 
-    GROUP BY articles.article_id
-    ORDER BY articles.${sort_by} ${order.toUpperCase()}
+  queryStr += ` GROUP BY articles.article_id
   `;
+
+  if (allowedSortBys.includes(sort_by)) {
+    queryStr += ` ORDER BY articles.${sort_by} ${order.toUpperCase()}`;
+  }
 
   const { rows } = await db.query(queryStr, queryValues);
 
