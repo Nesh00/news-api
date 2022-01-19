@@ -1,4 +1,6 @@
 const db = require('../db/connection');
+const format = require('pg-format');
+const { formatComment } = require('../utils/format_table-seeding.util');
 
 exports.fetchArticle = async (article_id) => {
   const { rows } = await db.query(
@@ -72,7 +74,7 @@ exports.fetchArticles = async (
   return rows;
 };
 
-exports.fetchCommentsByArticleId = async (article_id, lastSegment) => {
+exports.fetchCommentsByArticleId = async (article_id) => {
   const { rows } = await db.query(
     `
     SELECT comment_id, author, body, votes, created_at FROM comments
@@ -82,4 +84,21 @@ exports.fetchCommentsByArticleId = async (article_id, lastSegment) => {
   );
 
   return rows;
+};
+
+exports.insertComment = async (commentData) => {
+  const commentValues = [Object.values(commentData)];
+  const queryFormat = format(
+    `
+    INSERT INTO comments
+    (article_id, author, body)
+    VALUES
+    %L
+    RETURNING *;
+  `,
+    commentValues
+  );
+  const { rows } = await db.query(queryFormat);
+
+  return rows[0];
 };

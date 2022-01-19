@@ -5,6 +5,7 @@ const {
   updateArticle,
   getArticles,
   getCommentsByArticleId,
+  addComment,
 } = require('./controllers/articles.controller');
 const {
   handle404Errors,
@@ -22,6 +23,7 @@ app.get('/api/articles/:article_id', getArticle);
 app.patch('/api/articles/:article_id', updateArticle);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
+app.post('/api/articles/:article_id/comments', addComment);
 
 app.all('*', handle404Errors);
 app.use(handlePsqlErrors);

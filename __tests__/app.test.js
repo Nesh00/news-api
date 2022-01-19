@@ -220,7 +220,7 @@ describe('/api/articles/:article_id', () => {
   });
 });
 
-describe.only('/api/articles/:article_id/comments', () => {
+describe('/api/articles/:article_id/comments', () => {
   describe('GET', () => {
     test('SUCCESSFUL REQUEST - returns an array of comments for the given article_id', () => {
       return request(app)
@@ -252,6 +252,69 @@ describe.only('/api/articles/:article_id/comments', () => {
     test('UNSUCCESSFUL REQUEST - returns an error and message when last segment of URL is invalid', () => {
       return request(app)
         .get('/api/articles/3/comment')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+  });
+  describe('POST', () => {
+    test('SUCCESSFUL REQUEST - adds comment in table(comments) with the selected article_id, username and body', () => {
+      return request(app)
+        .post('/api/articles/3/comments')
+        .send({ username: 'butter_bridge', body: 'Interesting article!' })
+        .expect(201)
+        .then((res) => {
+          const { postedComment } = res.body;
+          expect(postedComment).toMatchObject({
+            comment_id: expect.any(Number),
+            article_id: 3,
+            author: 'butter_bridge',
+            body: 'Interesting article!',
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          });
+
+          return db
+            .query(`SELECT * FROM comments`)
+            .then(({ rows }) => expect(rows).toHaveLength(19));
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when article_id is undefined', () => {
+      return request(app)
+        .post('/api/articles//comments')
+        .send({ username: 'butter_bridge', body: 'Interesting article!' })
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when username dont match users table', () => {
+      return request(app)
+        .post('/api/articles/3/comments')
+        .send({ username: 'butter_bri', body: 'Interesting article!' })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when body is empty', () => {
+      return request(app)
+        .post('/api/articles/3/comments')
+        .send({ username: 'butter_bridge', body: '' })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when last URL segment is incorrect', () => {
+      return request(app)
+        .post('/api/articles/3/comment')
+        .send({ username: 'butter_bri', body: 'Interesting article!' })
         .expect(404)
         .then((res) => {
           const { message } = res.body;
