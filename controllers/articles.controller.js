@@ -2,8 +2,10 @@ const {
   fetchArticle,
   editArticle,
   fetchArticles,
+  fetchCommentsByArticleId,
 } = require('../models/articles.model');
 const { checkArticleExists } = require('../utils/checkArticleExists.util');
+const { compareSegment } = require('../utils/compareSegment.util');
 const { extractTopics } = require('../utils/extractTopics.util');
 
 exports.getArticle = (req, res, next) => {
@@ -52,6 +54,23 @@ exports.getArticles = (req, res, next) => {
         );
       } else {
         return Promise.reject({ status: 400, message: 'Bad Request' });
+      }
+    })
+    .catch(next);
+};
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const lastSegment = req.url.slice(req.url.lastIndexOf('/') + 1);
+
+  return compareSegment(lastSegment, 'comments')
+    .then((ifTrue) => {
+      if (ifTrue) {
+        return fetchCommentsByArticleId(article_id, lastSegment).then(
+          (comments) => res.status(200).send({ comments })
+        );
+      } else {
+        return Promise.reject({ status: 404, message: 'Not Found' });
       }
     })
     .catch(next);

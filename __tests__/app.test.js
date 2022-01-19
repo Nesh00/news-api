@@ -31,7 +31,7 @@ describe('/api/topics', () => {
         .expect(404)
         .then((res) => {
           const { message } = res.body;
-          expect(message).toBe('Invalid URL');
+          expect(message).toBe('Not Found');
         });
     });
   });
@@ -215,6 +215,47 @@ describe('/api/articles/:article_id', () => {
         .then((res) => {
           const { message } = res.body;
           expect(message).toBe('Bad Request');
+        });
+    });
+  });
+});
+
+describe.only('/api/articles/:article_id/comments', () => {
+  describe('GET', () => {
+    test('SUCCESSFUL REQUEST - returns an array of comments for the given article_id', () => {
+      return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then((res) => {
+          const { comments } = res.body;
+
+          comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              author: expect.any(String),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+            });
+          });
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when article_id is undefined', () => {
+      return request(app)
+        .get('/api/articles//comments')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when last segment of URL is invalid', () => {
+      return request(app)
+        .get('/api/articles/3/comment')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
         });
     });
   });

@@ -55,7 +55,7 @@ exports.fetchArticles = async (
     ON articles.article_id = comments.article_id
     JOIN users
     ON articles.author = users.username
-    `;
+  `;
 
   if (topic) {
     queryValues.push(topic);
@@ -68,6 +68,18 @@ exports.fetchArticles = async (
   `;
 
   const { rows } = await db.query(queryStr, queryValues);
+
+  return rows;
+};
+
+exports.fetchCommentsByArticleId = async (article_id, lastSegment) => {
+  const { rows } = await db.query(
+    `
+    SELECT comment_id, author, body, votes, created_at FROM comments
+    WHERE article_id = $1;
+    `,
+    [article_id]
+  );
 
   return rows;
 };

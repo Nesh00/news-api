@@ -1,5 +1,5 @@
 exports.handle404Errors = (req, res) => {
-  res.status(404).send({ message: 'Invalid URL' });
+  res.status(404).send({ message: 'Not Found' });
 };
 
 exports.handlePsqlErrors = (err, req, res, next) => {
