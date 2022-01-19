@@ -1,6 +1,6 @@
 const db = require('../connection');
 
-exports.createTopicsTable = () => {
+exports.createTopicsTable = async () => {
   return db.query(`
     CREATE TABLE IF NOT EXISTS topics (
       slug TEXT PRIMARY KEY,
@@ -9,8 +9,8 @@ exports.createTopicsTable = () => {
   `);
 };
 
-exports.createUsersTable = () => {
-  return db.query(`
+exports.createUsersTable = async () => {
+  return await db.query(`
     CREATE TABLE IF NOT EXISTS users (
       user_id SERIAL,
       username VARCHAR(50) PRIMARY KEY,
@@ -20,8 +20,8 @@ exports.createUsersTable = () => {
   `);
 };
 
-exports.createArticlesTable = () => {
-  return db.query(`
+exports.createArticlesTable = async () => {
+  return await db.query(`
     CREATE TABLE IF NOT EXISTS articles (
       article_id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
@@ -34,8 +34,8 @@ exports.createArticlesTable = () => {
   `);
 };
 
-exports.createCommentsTable = () => {
-  return db.query(`
+exports.createCommentsTable = async () => {
+  return await db.query(`
     CREATE TABLE IF NOT EXISTS comments (
       comment_id SERIAL PRIMARY KEY,
       article_id INT REFERENCES articles(article_id) NOT NULL,

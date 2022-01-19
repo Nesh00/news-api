@@ -7,7 +7,7 @@ const {
   formatComment,
 } = require('../../utils/format_table-seeding.util');
 
-exports.insertIntoTopics = (topicData) => {
+exports.insertIntoTopics = async (topicData) => {
   const topicValues = topicData.map(formatTopic);
   const queryFormat = format(
     `
@@ -20,10 +20,10 @@ exports.insertIntoTopics = (topicData) => {
     topicValues
   );
 
-  return db.query(queryFormat);
+  return await db.query(queryFormat);
 };
 
-exports.insertIntoUsers = (userData) => {
+exports.insertIntoUsers = async (userData) => {
   const userValues = userData.map(formatUser);
   const queryFormat = format(
     `
@@ -36,10 +36,10 @@ exports.insertIntoUsers = (userData) => {
     userValues
   );
 
-  return db.query(queryFormat);
+  return await db.query(queryFormat);
 };
 
-exports.insertIntoArticles = (articleData) => {
+exports.insertIntoArticles = async (articleData) => {
   const articleValues = articleData.map(formatArticle);
   const queryFormat = format(
     `
@@ -52,10 +52,10 @@ exports.insertIntoArticles = (articleData) => {
     articleValues
   );
 
-  return db.query(queryFormat);
+  return await db.query(queryFormat);
 };
 
-exports.insertIntoComments = (commentData) => {
+exports.insertIntoComments = async (commentData) => {
   const commentValues = commentData.map(formatComment);
   const queryFormat = format(
     `
@@ -68,5 +68,5 @@ exports.insertIntoComments = (commentData) => {
     commentValues
   );
 
-  return db.query(queryFormat);
+  return await db.query(queryFormat);
 };
