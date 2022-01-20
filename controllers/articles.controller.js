@@ -5,14 +5,14 @@ const {
   fetchCommentsByArticleId,
   insertComment,
 } = require('../models/articles.model');
-const { checkArticleExists } = require('../utils/checkArticleExists.util');
+const { checkDataIdExists } = require('../utils/checkDataIdExists.util');
 const { extractTopics } = require('../utils/extractTopics.util');
 const { extractUsers } = require('../utils/extractUsers.util');
 
 exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
 
-  return checkArticleExists(article_id)
+  return checkDataIdExists('articles', article_id)
     .then((articleExists) => {
       if (articleExists) {
         return fetchArticle(article_id).then((selectedArticle) => {
@@ -29,7 +29,7 @@ exports.patchArticle = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
 
-  return checkArticleExists(article_id)
+  return checkDataIdExists('articles', article_id)
     .then((articleExists) => {
       if (articleExists && inc_votes) {
         return editArticle(article_id, inc_votes).then((updatedArticle) =>

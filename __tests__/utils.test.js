@@ -1,6 +1,6 @@
 const db = require('../db/connection');
 const { extractTopics } = require('../utils/extractTopics.util');
-const { checkArticleExists } = require('../utils/checkArticleExists.util');
+const { checkDataIdExists } = require('../utils/checkDataIdExists.util');
 const {
   formatTopic,
   formatUser,
@@ -73,14 +73,14 @@ describe('Seeding util functions', () => {
   });
 });
 
-describe('checkArticleExists', () => {
+describe('checkDataIdExists', () => {
   test('returns true if the article exists', () => {
-    checkArticleExists(3).then((exists) => {
+    checkDataIdExists('articles', 3).then((exists) => {
       expect(exists).toBe(true);
     });
   });
   test('returns false if the article does not exist', () => {
-    checkArticleExists('456').then((exists) => {
+    checkDataIdExists('articles', 456).then((exists) => {
       expect(exists).toBe(false);
     });
   });
