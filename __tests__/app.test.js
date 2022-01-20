@@ -355,6 +355,68 @@ describe('/api/comments/:comment_id', () => {
         });
     });
   });
+  describe('PATCH', () => {
+    test('SUCCESSFUL REQUEST - increases the votes in the selected comment when inc_votes is > 0, and returns the comment', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: 40 })
+        .expect(201)
+        .then((res) => {
+          const { updatedComment } = res.body;
+          expect(updatedComment.votes).toBe(56);
+        });
+    });
+    test('SUCCESSFUL REQUEST - decreases the votes in the selected comment when inc_votes is < 0, and returns the comment', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: -53 })
+        .expect(201)
+        .then((res) => {
+          const { updatedComment } = res.body;
+          expect(updatedComment.votes).toBe(-37);
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is non-existant', () => {
+      return request(app)
+        .patch('/api/comments/654')
+        .send({ inc_votes: -53 })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is invalid', () => {
+      return request(app)
+        .patch('/api/comments/comment_id=1')
+        .send({ inc_votes: -53 })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error status & message, when an empty body is sent', () => {
+      return request(app)
+        .patch('/api/comments/article_id=1')
+        .send()
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error status & message, when an inc_votes value is not a number', () => {
+      return request(app)
+        .patch('/api/comments/comment_id=1')
+        .send({ inc_votes: 'ten' })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+  });
 });
 
 describe('/api/users', () => {
