@@ -41,10 +41,12 @@ describe('/api/articles', () => {
   describe('GET', () => {
     test('SUCCESSFUL REQUEST - returns an array of article objects when all queries are passed', () => {
       return request(app)
-        .get('/api/articles?sort_by=author&order=ASC&topic=mitch')
+        .get('/api/articles?sort_by=author&order=asc&topic=mitch')
         .expect(200)
         .then((res) => {
           const { articles } = res.body;
+          expect(articles.length).toBeGreaterThan(0);
+          expect(articles).toBeSortedBy('author');
 
           articles.forEach((article) => {
             expect(article).toMatchObject({
@@ -60,9 +62,9 @@ describe('/api/articles', () => {
           });
         });
     });
-    test('SUCCESSFUL REQUEST - returns an array of article objects even when sort_by is omitted', () => {
+    test('SUCCESSFUL REQUEST - returns an array of article objects when both sort_by and order are omitted', () => {
       return request(app)
-        .get('/api/articles?order=ASC&topic=mitch')
+        .get('/api/articles?topic=mitch')
         .expect(200)
         .then((res) => {
           const { articles } = res.body;
@@ -81,34 +83,81 @@ describe('/api/articles', () => {
           });
         });
     });
-    test('SUCCESSFUL REQUEST - returns an array of article objects even when order is omitted', () => {
+    test('SUCCESSFUL REQUEST - returns an array of article objects sorted by votes(sort_by=votes)', () => {
       return request(app)
-        .get('/api/articles?sort_by=author&topic=mitch')
+        .get('/api/articles?sort_by=votes&order=desc&topic=mitch')
         .expect(200)
         .then((res) => {
           const { articles } = res.body;
+          expect(articles).toBeSortedBy('votes', { descending: true });
+        });
+    });
+    test('SUCCESSFUL REQUEST - returns an ascending array of article object when order=asc', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=asc&topic=mitch')
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles).toBeSortedBy('author', { descending: false });
+        });
+    });
+    test('SUCCESSFUL REQUEST - returns an ascending array of article object when topic=cats', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=asc&topic=cats')
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles.length).toBeGreaterThan(0);
 
           articles.forEach((article) => {
-            expect(article).toMatchObject({
-              article_id: expect.any(Number),
-              title: expect.any(String),
-              topic: expect.any(String),
-              author: expect.any(String),
-              body: expect.any(String),
-              votes: expect.any(Number),
-              created_at: expect.any(String),
-              comment_count: expect.any(Number),
-            });
+            expect(article.topic).toBe('cats');
           });
         });
     });
-    test('UNSUCCESSFUL REQUEST - returns an error and message when topic is omitted', () => {
+    test('SUCCESSFUL REQUEST - returns an empty array of articles when topic is valid, but has no articles', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=asc&topic=paper')
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles.length).toBe(0);
+          expect(articles).toEqual([]);
+        });
+    });
+    test('SUCCESSFUL REQUEST - returns an array of all the articles when topic is omitted', () => {
       return request(app)
         .get('/api/articles?sort_by=author&order=ASC')
+        .expect(200)
+        .then((res) => {
+          const { articles } = res.body;
+          expect(articles.length).toBeGreaterThan(0);
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - if sort_by is invalid return 400 and error message', () => {
+      return request(app)
+        .get('/api/articles?sort_by=bananas&order=ASC')
         .expect(400)
         .then((res) => {
           const { message } = res.body;
           expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - if order is invalid return 400 and error message', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=bananas')
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test.skip('UNSUCCESSFUL REQUEST - if topic is non-existant return 404 and error message', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=asc&topic=bananas')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
         });
     });
   });
@@ -121,20 +170,34 @@ describe('/api/articles/:article_id', () => {
         .get('/api/articles/1')
         .expect(200)
         .then((res) => {
-          const { selectedArticle } = res.body;
+          const { article } = res.body;
 
-          expect(selectedArticle).toMatchObject([
-            {
-              article_id: expect.any(Number),
-              title: expect.any(String),
-              topic: expect.any(String),
-              author: expect.any(String),
-              body: expect.any(String),
-              votes: expect.any(Number),
-              created_at: expect.any(String),
-              comment_count: expect.any(Number),
-            },
-          ]);
+          expect(article).toMatchObject({
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            author: 'butter_bridge',
+            body: 'I find this existence challenging',
+            created_at: '2020-07-09T20:11:00.000Z',
+            votes: 100,
+          });
+        });
+    });
+    test('SUCCESSFUL REQUEST - will respond with the selected article object even when there are no comments left on that id', () => {
+      return request(app)
+        .get('/api/articles/2')
+        .expect(200)
+        .then((res) => {
+          const { article } = res.body;
+
+          expect(article.comment_count).toBe(0);
+          expect(article).toMatchObject({
+            title: 'Sony Vaio; or, The Laptop',
+            topic: 'mitch',
+            author: 'icellusedkars',
+            body: 'Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.',
+            created_at: '2020-10-16T05:03:00.000Z',
+            votes: 0,
+          });
         });
     });
     test('UNSUCCESSFUL REQUEST - article_id non-existant but still valid, respond with 404 and error message', () => {
@@ -146,13 +209,13 @@ describe('/api/articles/:article_id', () => {
           expect(message).toBe('Not Found');
         });
     });
-    test('UNSUCCESSFUL REQUEST - article_id exists but no comments left on that id, respond with 404 and error message', () => {
+    test('UNSUCCESSFUL REQUEST - if article_id is invalid, respond with 400 and error message', () => {
       return request(app)
-        .get('/api/articles/2')
-        .expect(200)
+        .get('/api/articles/article_id=2')
+        .expect(400)
         .then((res) => {
-          const { selectedArticle } = res.body;
-          expect(selectedArticle).toHaveLength(0);
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
         });
     });
   });
@@ -163,8 +226,8 @@ describe('/api/articles/:article_id', () => {
         .send({ inc_votes: 40 })
         .expect(201)
         .then((res) => {
-          const { updatedArticle } = res.body;
-          expect(updatedArticle.votes).toBe(140);
+          const { article } = res.body;
+          expect(article.votes).toBe(140);
         });
     });
     test('SUCCESSFUL REQUEST - decreases the votes in the selected article when inc_votes is < 0, and returns the article', () => {
@@ -173,18 +236,18 @@ describe('/api/articles/:article_id', () => {
         .send({ inc_votes: -53 })
         .expect(201)
         .then((res) => {
-          const { updatedArticle } = res.body;
-          expect(updatedArticle.votes).toBe(47);
+          const { article } = res.body;
+          expect(article.votes).toBe(47);
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is non-existant', () => {
       return request(app)
         .patch('/api/articles/654')
         .send({ inc_votes: -53 })
-        .expect(400)
+        .expect(404)
         .then((res) => {
           const { message } = res.body;
-          expect(message).toBe('Bad Request');
+          expect(message).toBe('Not Found');
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is invalid', () => {
@@ -228,6 +291,7 @@ describe('/api/articles/:article_id/comments', () => {
         .expect(200)
         .then((res) => {
           const { comments } = res.body;
+          expect(comments.length).toBe(2);
 
           comments.forEach((comment) => {
             expect(comment).toMatchObject({
@@ -238,6 +302,16 @@ describe('/api/articles/:article_id/comments', () => {
               created_at: expect.any(String),
             });
           });
+        });
+    });
+    test('SUCCESSFUL REQUEST - returns an empty array of comments when article_id has no comments', () => {
+      return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then((res) => {
+          const { comments } = res.body;
+          expect(comments.length).toBe(0);
+          expect(comments).toEqual([]);
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error and message when article_id is undefined', () => {
@@ -258,6 +332,15 @@ describe('/api/articles/:article_id/comments', () => {
           expect(message).toBe('Not Found');
         });
     });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when article_id is non-existant', () => {
+      return request(app)
+        .get('/api/articles/1000/comments')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
+        });
+    });
   });
   describe('POST', () => {
     test('SUCCESSFUL REQUEST - adds comment in table(comments) with the selected article_id, username and body', () => {
@@ -266,19 +349,40 @@ describe('/api/articles/:article_id/comments', () => {
         .send({ username: 'butter_bridge', body: 'Interesting article!' })
         .expect(201)
         .then((res) => {
-          const { postedComment } = res.body;
-          expect(postedComment).toMatchObject({
-            comment_id: expect.any(Number),
+          const { comment } = res.body;
+          expect(comment).toMatchObject({
+            comment_id: 19,
             article_id: 3,
             author: 'butter_bridge',
             body: 'Interesting article!',
-            votes: expect.any(Number),
+            votes: 0,
             created_at: expect.any(String),
           });
 
           return db
             .query(`SELECT * FROM comments`)
             .then(({ rows }) => expect(rows).toHaveLength(19));
+        });
+    });
+    test('SUCCESSFUL REQUEST - ignores unnecessary properties', () => {
+      return request(app)
+        .post('/api/articles/3/comments')
+        .send({
+          username: 'butter_bridge',
+          body: 'Interesting article!',
+          votes: 5,
+        })
+        .expect(201)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment).toMatchObject({
+            comment_id: 19,
+            article_id: 3,
+            author: 'butter_bridge',
+            body: 'Interesting article!',
+            votes: 0,
+            created_at: expect.any(String),
+          });
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error and message when article_id is undefined', () => {
@@ -289,6 +393,16 @@ describe('/api/articles/:article_id/comments', () => {
         .then((res) => {
           const { message } = res.body;
           expect(message).toBe('Not Found');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when article_id is invalid', () => {
+      return request(app)
+        .post('/api/articles/article_id=1/comments')
+        .send({ username: 'butter_bridge', body: 'Interesting article!' })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error and message when username dont match users table', () => {
@@ -324,6 +438,28 @@ describe('/api/articles/:article_id/comments', () => {
   });
 });
 
+describe.skip('/api/comments', () => {
+  test('GET', () => {
+    return request(app)
+      .get('/api/comments')
+      .expect(200)
+      .then((res) => {
+        const { comments } = req.body;
+        expect(comments.length).toBeGreaterThan(0);
+
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+}); //currently working on
+
 describe('/api/comments/:comment_id', () => {
   describe('DELETE', () => {
     test('SUCCESSFUL REQUEST - removes selected comment_id and returns no content', () => {
@@ -331,9 +467,13 @@ describe('/api/comments/:comment_id', () => {
         .delete('/api/comments/1')
         .expect(204)
         .then(() => {
-          return db.query(`SELECT * FROM comments`).then(({ rows }) => {
-            expect(rows.length).toBe(17);
-          });
+          return db
+            .query(
+              `
+              SELECT * FROM comments
+              WHERE comment_id = 1;`
+            )
+            .then(({ rows }) => expect(rows).toEqual([]));
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error and message when the comment_id is valid but non-existant', () => {
@@ -345,13 +485,13 @@ describe('/api/comments/:comment_id', () => {
           expect(message).toBe('Not Found');
         });
     });
-    test('UNSUCCESSFUL REQUEST - returns an error when the comment_id is valid but non-existant', () => {
+    test('UNSUCCESSFUL REQUEST - returns an error when the comment_id is invalid', () => {
       return request(app)
-        .delete('/api/comments/100')
-        .expect(404)
+        .delete('/api/comments/comment_id=1')
+        .expect(400)
         .then((res) => {
           const { message } = res.body;
-          expect(message).toBe('Not Found');
+          expect(message).toBe('Bad Request');
         });
     });
   });
@@ -362,8 +502,8 @@ describe('/api/comments/:comment_id', () => {
         .send({ inc_votes: 40 })
         .expect(201)
         .then((res) => {
-          const { updatedComment } = res.body;
-          expect(updatedComment.votes).toBe(56);
+          const { comment } = res.body;
+          expect(comment.votes).toBe(56);
         });
     });
     test('SUCCESSFUL REQUEST - decreases the votes in the selected comment when inc_votes is < 0, and returns the comment', () => {
@@ -372,8 +512,8 @@ describe('/api/comments/:comment_id', () => {
         .send({ inc_votes: -53 })
         .expect(201)
         .then((res) => {
-          const { updatedComment } = res.body;
-          expect(updatedComment.votes).toBe(-37);
+          const { comment } = res.body;
+          expect(comment.votes).toBe(-37);
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is non-existant', () => {
@@ -427,6 +567,7 @@ describe('/api/users', () => {
         .expect(200)
         .then((res) => {
           const { users } = res.body;
+          expect(users.length).toBeGreaterThan(0);
 
           users.forEach((user) => {
             expect(user).toMatchObject({ username: expect.any(String) });
