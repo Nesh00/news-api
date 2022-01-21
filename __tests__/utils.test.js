@@ -1,5 +1,5 @@
 const db = require('../db/connection');
-const { extractTopics } = require('../utils/extractTopics.util');
+const { extractUsers } = require('../utils/extractUsers.util');
 const { checkDataIdExists } = require('../utils/checkDataIdExists.util');
 const {
   formatTopic,
@@ -86,9 +86,9 @@ describe('checkDataIdExists', () => {
   });
 });
 
-describe('extractTopics', () => {
+describe('extractUsers', () => {
   test('should return an array of objects with no duplicate property values', () => {
-    const testTopics = [
+    const testUsers = [
       {
         title: 'UNCOVERED: catspiracy to bring down democracy',
         topic: 'cats',
@@ -114,8 +114,14 @@ describe('extractTopics', () => {
         votes: 0,
       },
     ];
-    extractTopics(testTopics).then((topics) => {
-      expect(topics).toEqual([{ topic: 'mitch' }, { topic: 'cats' }]);
+
+    extractUsers(testUsers).then((topics) => {
+      expect(topics).toEqual([
+        'butter_bridge',
+        'icellusedkars',
+        'rogersop',
+        'lurker',
+      ]);
     });
   });
 });
