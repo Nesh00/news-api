@@ -7,8 +7,8 @@ const commentsRouter = require('./comments.router');
 const usersRouter = require('./users.router');
 
 apiRouter
-  .get((req, res, next) => {
-    res.send(endpoints);
+  .get('/', (req, res) => {
+    res.status(200).send(endpoints);
   })
   .use('/topics', topicsRouter)
   .use('/articles', articlesRouter)

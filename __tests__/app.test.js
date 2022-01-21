@@ -7,6 +7,21 @@ const request = require('supertest');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+describe('/api', () => {
+  describe('GET', () => {
+    test('reads JSON file and returns it', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then((res) => {
+          expect(res.headers['content-type']).toBe(
+            'application/json; charset=utf-8'
+          );
+        });
+    });
+  });
+});
+
 describe('/api/topics', () => {
   describe('GET', () => {
     test('SUCCESSFUL REQUEST - if pathname is correct responds with an array of topic objects', () => {
