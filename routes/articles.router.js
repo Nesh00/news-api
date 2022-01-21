@@ -1,6 +1,6 @@
 const express = require('express');
 const {
-  getArticle,
+  getArticleById,
   patchArticle,
   getArticles,
   getCommentsByArticleId,
@@ -14,7 +14,7 @@ articlesRouter.route('/').get(getArticles);
 articlesRouter
   .route('/:article_id')
   .all(sanitazeParams)
-  .get(getArticle)
+  .get(getArticleById)
   .patch(patchArticle);
 
 articlesRouter
