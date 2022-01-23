@@ -12,7 +12,7 @@ exports.createTopicsTable = async () => {
 exports.createUsersTable = async () => {
   return await db.query(`
     CREATE TABLE IF NOT EXISTS users (
-      username VARCHAR(50) PRIMARY KEY,
+      username VARCHAR(50) PRIMARY KEY NOT NULL,
       name VARCHAR(50) NOT NULL,
       avatar_url TEXT NOT NULL
     )

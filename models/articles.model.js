@@ -3,22 +3,48 @@ const format = require('pg-format');
 
 exports.fetchArticles = async (sort_by, order, topic) => {
   const queryValues = [];
+  const allowedOrderBys = ['ASC', 'DESC'];
+  const allowedSortBys = [
+    'article_id',
+    'title',
+    'topic',
+    'author',
+    'body',
+    'votes',
+    'created_at',
+    'comment_count',
+  ];
+  const allowedTopics = [
+    'coding',
+    'football',
+    'cooking',
+    'mitch',
+    'cats',
+    'paper',
+  ];
+
   let queryStr = `
     SELECT articles.*, COUNT(comment_id)::INT AS comment_count
     FROM articles
-    JOIN comments
+    LEFT JOIN comments
     ON articles.article_id = comments.article_id
     JOIN users
-    ON articles.author = users.username
-  `;
+    ON articles.author = users.username`;
 
-  if (topic) {
+  if (allowedTopics.includes(topic)) {
     queryValues.push(topic);
-    queryStr += `WHERE articles.topic = $1`;
+    queryStr += `
+    WHERE articles.topic = $1`;
   }
-  queryStr += ` GROUP BY articles.article_id
-  ORDER BY articles.${sort_by} ${order.toUpperCase()}
-  `;
+
+  if (
+    allowedSortBys.includes(sort_by) &&
+    allowedOrderBys.includes(order.toUpperCase())
+  ) {
+    queryStr += ` 
+    GROUP BY articles.article_id
+    ORDER BY articles.${sort_by} ${order.toUpperCase()}`;
+  }
 
   const { rows } = await db.query(queryStr, queryValues);
 

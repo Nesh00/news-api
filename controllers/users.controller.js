@@ -1,5 +1,5 @@
 const { fetchUsers, fetchUserByUsername } = require('../models/users.model');
-const { extractUsers } = require('../utils/extractUsers.util');
+const { checkDataIdExists } = require('../utils/checkDataIdExists.util');
 
 exports.getUsers = (req, res, next) => {
   return fetchUsers()
@@ -10,14 +10,16 @@ exports.getUsers = (req, res, next) => {
 exports.getUserByUsername = (req, res, next) => {
   const { username } = req.params;
 
-  return extractUsers()
-    .then((users) => {
-      if (users.includes(username)) {
+  return checkDataIdExists('users', 'username', username)
+    .then((rowCount) => {
+      if (!rowCount) {
+        return Promise.reject({ status: 404, message: 'Not Found' });
+      } else if (rowCount === 0) {
+        return Promise.reject({ status: 400, message: 'Bad Request' });
+      } else {
         return fetchUserByUsername(username).then((user) => {
           res.status(200).send({ user });
         });
-      } else {
-        return Promise.reject({ status: 404, message: 'Not Found' });
       }
     })
     .catch(next);

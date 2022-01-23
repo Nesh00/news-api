@@ -5,13 +5,3 @@ exports.sanitazeParams = (req, res, next) => {
   );
   next();
 };
-
-// exports.sanitazeQueries = (queries) => {
-//   const queryKeys = Object.keys(req.query);
-//   queryKeys.forEach(
-//     (queryKey) =>
-//       (req.query[queryKey] = req.query[queryKey].toLowerCase().trim())
-//   );
-
-//   next();
-// };

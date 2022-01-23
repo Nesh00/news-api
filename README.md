@@ -48,7 +48,7 @@ PGDATABASE=nc_news_test
 
 ---
 
-Once npm packages are installed, create the local databases. What this will do is create two databases, one for development purpose and one for testing.
+Once npm packages are installed, run the command bellow. What this will do is create two databases, one for development purpose and one for testing.
 
 ```
 npm run setup-dbs
@@ -58,15 +58,15 @@ npm run setup-dbs
 
 ---
 
-### To seed the testing database:
+### Seed testing database:
 
 ```
 npm test
 ```
 
-The tests were created using [**Jest**](https://jestjs.io/) and [**jest-sorted**](https://www.npmjs.com/package/jest-sorted).
+These tests were created using [**Jest**](https://jestjs.io/), [**jest-sorted**](https://www.npmjs.com/package/jest-sorted) and [**supertest**](https://www.npmjs.com/package/supertest).
 
-### To seed development database:
+### Seed development database:
 
 ```
 npm run seed

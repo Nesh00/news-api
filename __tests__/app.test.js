@@ -166,15 +166,6 @@ describe('/api/articles', () => {
           expect(message).toBe('Bad Request');
         });
     });
-    test.skip('UNSUCCESSFUL REQUEST - if topic is non-existant return 404 and error message', () => {
-      return request(app)
-        .get('/api/articles?sort_by=author&order=asc&topic=bananas')
-        .expect(404)
-        .then((res) => {
-          const { message } = res.body;
-          expect(message).toBe('Not Found');
-        });
-    });
   });
 });
 
@@ -515,7 +506,7 @@ describe('/api/comments/:comment_id', () => {
       return request(app)
         .patch('/api/comments/1')
         .send({ inc_votes: 40 })
-        .expect(201)
+        .expect(200)
         .then((res) => {
           const { comment } = res.body;
           expect(comment.votes).toBe(56);
@@ -525,36 +516,36 @@ describe('/api/comments/:comment_id', () => {
       return request(app)
         .patch('/api/comments/1')
         .send({ inc_votes: -53 })
-        .expect(201)
+        .expect(200)
         .then((res) => {
           const { comment } = res.body;
           expect(comment.votes).toBe(-37);
         });
     });
-    test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is non-existant', () => {
+    test('SUCCESSFUL REQUEST - will not affect comment, when an empty body is sent', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send()
+        .expect(200)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment.votes).toBe(16);
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is non-existent', () => {
       return request(app)
         .patch('/api/comments/654')
         .send({ inc_votes: -53 })
-        .expect(400)
+        .expect(404)
         .then((res) => {
           const { message } = res.body;
-          expect(message).toBe('Bad Request');
+          expect(message).toBe('Not Found');
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is invalid', () => {
       return request(app)
         .patch('/api/comments/comment_id=1')
         .send({ inc_votes: -53 })
-        .expect(400)
-        .then((res) => {
-          const { message } = res.body;
-          expect(message).toBe('Bad Request');
-        });
-    });
-    test('UNSUCCESSFUL REQUEST - returns an error status & message, when an empty body is sent', () => {
-      return request(app)
-        .patch('/api/comments/article_id=1')
-        .send()
         .expect(400)
         .then((res) => {
           const { message } = res.body;
@@ -617,13 +608,22 @@ describe('/api/users/:username', () => {
           });
         });
     });
-    test('UNSUCCESSFUL REQUEST - username is non-existant but still valid, respond with 404 and error message', () => {
+    test('UNSUCCESSFUL REQUEST - username is non-existent but still valid, respond with 404 and error message', () => {
       return request(app)
         .get('/api/users/rogersopp')
         .expect(404)
         .then((res) => {
           const { message } = res.body;
           expect(message).toBe('Not Found');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - username is invalid, respond with 400 and error message', () => {
+      return request(app)
+        .get('/api/users/username=john')
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
         });
     });
   });

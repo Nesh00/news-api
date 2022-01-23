@@ -1,5 +1,7 @@
 const db = require('../db/connection');
 
+exports.fetchComments = async (limit = 10, page = 1) => {};
+
 exports.removeCommentById = async (comment_id) => {
   const { rowCount } = await db.query(
     `
@@ -11,7 +13,7 @@ exports.removeCommentById = async (comment_id) => {
   return rowCount;
 };
 
-exports.editCommentById = async (comment_id, newVotes) => {
+exports.editCommentById = async (comment_id, newVotes = 0) => {
   const { rows } = await db.query(
     `
     UPDATE comments
@@ -21,6 +23,5 @@ exports.editCommentById = async (comment_id, newVotes) => {
     `,
     [newVotes, comment_id]
   );
-
   return rows[0];
 };

@@ -75,13 +75,13 @@ describe('Seeding util functions', () => {
 
 describe('checkDataIdExists', () => {
   test('returns true if the article exists', () => {
-    checkDataIdExists('articles', 3).then((exists) => {
-      expect(exists).toBe(true);
+    checkDataIdExists('articles', 'article_id', 3).then((exists) => {
+      expect(exists).toBe(1);
     });
   });
   test('returns false if the article does not exist', () => {
     checkDataIdExists('articles', 456).then((exists) => {
-      expect(exists).toBe(false);
+      expect(exists).toBe(0);
     });
   });
 });
