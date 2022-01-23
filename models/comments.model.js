@@ -1,7 +1,5 @@
 const db = require('../db/connection');
 
-exports.fetchComments = async (limit = 10, page = 1) => {};
-
 exports.removeCommentById = async (comment_id) => {
   const { rowCount } = await db.query(
     `

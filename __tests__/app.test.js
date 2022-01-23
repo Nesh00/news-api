@@ -444,28 +444,6 @@ describe('/api/articles/:article_id/comments', () => {
   });
 });
 
-describe.skip('/api/comments', () => {
-  test('GET', () => {
-    return request(app)
-      .get('/api/comments')
-      .expect(200)
-      .then((res) => {
-        const { comments } = req.body;
-        expect(comments.length).toBeGreaterThan(0);
-
-        comments.forEach((comment) => {
-          expect(comment).toMatchObject({
-            body: expect.any(String),
-            votes: expect.any(Number),
-            author: expect.any(String),
-            article_id: expect.any(Number),
-            created_at: expect.any(String),
-          });
-        });
-      });
-  });
-}); //currently working on
-
 describe('/api/comments/:comment_id', () => {
   describe('DELETE', () => {
     test('SUCCESSFUL REQUEST - removes selected comment_id and returns no content', () => {
@@ -620,10 +598,10 @@ describe('/api/users/:username', () => {
     test('UNSUCCESSFUL REQUEST - username is invalid, respond with 400 and error message', () => {
       return request(app)
         .get('/api/users/username=john')
-        .expect(400)
+        .expect(404)
         .then((res) => {
           const { message } = res.body;
-          expect(message).toBe('Bad Request');
+          expect(message).toBe('Not Found');
         });
     });
   });

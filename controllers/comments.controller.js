@@ -1,13 +1,8 @@
 const {
-  fetchComments,
   removeCommentById,
   editCommentById,
 } = require('../models/comments.model');
 const { checkDataIdExists } = require('../utils/checkDataIdExists.util');
-
-exports.getComments = (req, res, next) => {
-  return fetchComments;
-};
 
 exports.deleteCommentById = (req, res, next) => {
   const { comment_id } = req.params;
