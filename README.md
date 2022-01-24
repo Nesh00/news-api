@@ -71,3 +71,11 @@ These tests were created using [**Jest**](https://jestjs.io/), [**jest-sorted**]
 ```
 npm run seed
 ```
+
+## View JSON data
+
+---
+
+For better view on JSON data in the browser I would recommend adding [**JSON Viewer**](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) extension if you're using Google Chrome.
+
+![JSON Viewer](screenshots/JSON_viewer.png)
