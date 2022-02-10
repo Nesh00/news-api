@@ -19,6 +19,7 @@ articlesRouter
 
 articlesRouter
   .route('/:article_id/comments')
+  .all(sanitazeParams)
   .get(getCommentsByArticleId)
   .post(postComment);
 

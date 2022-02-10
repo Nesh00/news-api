@@ -9,7 +9,7 @@ exports.fetchUsers = async () => {
 exports.fetchUserByUsername = async (username) => {
   const { rows } = await db.query(
     `
-    SELECT username, name, avatar_url FROM users
+    SELECT * FROM users
     WHERE username = $1;
     `,
     [username]

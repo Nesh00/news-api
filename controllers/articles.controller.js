@@ -60,13 +60,16 @@ exports.patchArticle = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
+  const { sort_by = 'created_at', order = 'DESC' } = req.query;
 
   return checkDataIdExists('articles', 'article_id', article_id)
     .then((articleExists) => {
       if (articleExists) {
-        return fetchCommentsByArticleId(article_id).then((comments) => {
-          res.status(200).send({ comments });
-        });
+        return fetchCommentsByArticleId(article_id, sort_by, order).then(
+          (comments) => {
+            res.status(200).send({ comments });
+          }
+        );
       } else {
         return Promise.reject({ status: 404, message: 'Not Found' });
       }

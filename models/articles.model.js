@@ -82,14 +82,23 @@ exports.editArticle = async (article_id, inc_votes) => {
   return rows[0];
 };
 
-exports.fetchCommentsByArticleId = async (article_id) => {
-  const { rows } = await db.query(
-    `
+exports.fetchCommentsByArticleId = async (article_id, sort_by, order) => {
+  const allowedSortBys = ['author', 'votes', 'created_at'];
+  const allowedOrderBys = ['ASC', 'DESC'];
+
+  let queryStr = `
     SELECT comment_id, author, body, votes, created_at FROM comments
-    WHERE article_id = $1;
-    `,
-    [article_id]
-  );
+    WHERE article_id = $1
+  `;
+
+  if (
+    allowedSortBys.includes(sort_by) &&
+    allowedOrderBys.includes(order.toUpperCase())
+  ) {
+    queryStr += ` ORDER BY ${sort_by} ${order.toUpperCase()};`;
+  }
+
+  const { rows } = await db.query(queryStr, [article_id]);
 
   return rows;
 };

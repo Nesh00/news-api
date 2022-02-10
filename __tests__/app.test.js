@@ -293,12 +293,11 @@ describe('/api/articles/:article_id/comments', () => {
   describe('GET', () => {
     test('SUCCESSFUL REQUEST - returns an array of comments for the given article_id', () => {
       return request(app)
-        .get('/api/articles/3/comments')
+        .get('/api/articles/3/comments?sort_by=author&order=asc')
         .expect(200)
         .then((res) => {
           const { comments } = res.body;
           expect(comments.length).toBe(2);
-
           comments.forEach((comment) => {
             expect(comment).toMatchObject({
               comment_id: expect.any(Number),
