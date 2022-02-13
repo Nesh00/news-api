@@ -16,6 +16,9 @@ exports.getArticles = (req, res, next) => {
     .then((ifTrue) => {
       if (ifTrue) {
         return fetchArticles(sort_by, order, topic).then((articles) => {
+          if (articles.length === 0) {
+            return Promise.reject({ status: 404, message: 'Not Found' });
+          }
           res.status(200).send({ articles });
         });
       } else {

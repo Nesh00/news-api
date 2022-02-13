@@ -129,16 +129,6 @@ describe('/api/articles', () => {
           });
         });
     });
-    test('SUCCESSFUL REQUEST - returns an empty array of articles when topic is valid, but has no articles', () => {
-      return request(app)
-        .get('/api/articles?sort_by=author&order=asc&topic=paper')
-        .expect(200)
-        .then((res) => {
-          const { articles } = res.body;
-          expect(articles.length).toBe(0);
-          expect(articles).toEqual([]);
-        });
-    });
     test('SUCCESSFUL REQUEST - returns an array of all the articles when topic is omitted', () => {
       return request(app)
         .get('/api/articles?sort_by=author&order=ASC')
@@ -146,6 +136,15 @@ describe('/api/articles', () => {
         .then((res) => {
           const { articles } = res.body;
           expect(articles.length).toBeGreaterThan(0);
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error message when topic does not exist', () => {
+      return request(app)
+        .get('/api/articles?sort_by=author&order=asc&topic=paper')
+        .expect(404)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Not Found');
         });
     });
     test('UNSUCCESSFUL REQUEST - if sort_by is invalid return 400 and error message', () => {
