@@ -1,16 +1,10 @@
-# NEWS - API
+# nC-news API
 
 _A Back-End API build with NodeJS, ExpressJS and PSQL for the purpose of interacting with data. The goal of this application is to provide data to the Front-End architecture._
 
 **Live URL**: [https://nenad-nc-news-api.herokuapp.com/api](https://nenad-nc-news-api.herokuapp.com/api)
 
-## Basic requirements
-
----
-
-If you want to run this app on your local machine, make sure you have versions [**NodeJS v16.11.0**](https://nodejs.org/en/) and [**PostgreSQL 12.9**](https://www.postgresql.org/) or above installed.
-
-## Cloning
+## Download
 
 ---
 
@@ -19,6 +13,12 @@ You can find the repository on my [**GitHub**](https://github.com/Nesh00/news-ap
 ```
 git clone https://github.com/Nesh00/news-api.git
 ```
+
+## Basic requirements
+
+---
+
+If you want to run this app on your local machine, make sure you have versions [**NodeJS v16.11.0**](https://nodejs.org/en/) and [**PostgreSQL 12.9**](https://www.postgresql.org/) installed.
 
 ## Installation
 
@@ -78,4 +78,15 @@ npm run seed
 
 For better view on JSON data in the browser I would recommend adding [**JSON Viewer**](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) extension if you're using Google Chrome.
 
-![JSON Viewer](screenshots/JSON_viewer.png)
+<img src="screenshots/JSON_viewer.png" alt="screenshot"  width="900" height="500"/>
+
+## Future development
+
+---
+
+My future goal for this app is:
+
+- Create a POST request on users table for new user
+- Add pagination on both articles and comments
+- PATCH request on comments to edit them
+- POST, PATCH and DELETE articles
