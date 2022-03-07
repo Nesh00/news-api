@@ -4,9 +4,9 @@ _A Back-End API build with NodeJS, ExpressJS and PSQL for the purpose of interac
 
 **Live URL**: [https://nenad-nc-news-api.herokuapp.com/api](https://nenad-nc-news-api.herokuapp.com/api)
 
-## Download
-
 ---
+
+## Download
 
 You can find the repository on my [**GitHub**](https://github.com/Nesh00/news-api) account and clone it down or just download the ZIP file.
 
@@ -14,15 +14,15 @@ You can find the repository on my [**GitHub**](https://github.com/Nesh00/news-ap
 git clone https://github.com/Nesh00/news-api.git
 ```
 
-## Basic requirements
-
 ---
+
+## Basic requirements
 
 If you want to run this app on your local machine, make sure you have versions [**NodeJS v16.11.0**](https://nodejs.org/en/) and [**PostgreSQL 12.9**](https://www.postgresql.org/) installed.
 
-## Installation
-
 ---
+
+## Installation
 
 Once you have the repository on your computer, install the npm packages.
 
@@ -30,9 +30,9 @@ Once you have the repository on your computer, install the npm packages.
 npm install
 ```
 
-## Create .env files
-
 ---
+
+## Create .env files
 
 Create two files **.env-development** and **.env-test**.
 
@@ -44,9 +44,9 @@ PGDATABASE=nc_news
 PGDATABASE=nc_news_test
 ```
 
-## Create Database
-
 ---
+
+## Create Database
 
 Once npm packages are installed, run the command bellow. What this will do is create two databases, one for development purpose and one for testing.
 
@@ -54,9 +54,9 @@ Once npm packages are installed, run the command bellow. What this will do is cr
 npm run setup-dbs
 ```
 
-## Seed Database
-
 ---
+
+## Seed Database
 
 ### Seed testing database:
 
@@ -72,17 +72,17 @@ These tests were created using [**Jest**](https://jestjs.io/), [**jest-sorted**]
 npm run seed
 ```
 
-## View JSON data
-
 ---
+
+## View JSON data
 
 For better view on JSON data in the browser I would recommend adding [**JSON Viewer**](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) extension if you're using Google Chrome.
 
 <img src="screenshots/JSON_viewer.png" alt="screenshot"  width="900" height="500"/>
 
-## Future development
-
 ---
+
+## Future development
 
 My future goal for this app is:
 
@@ -90,3 +90,5 @@ My future goal for this app is:
 - Add pagination on both articles and comments
 - PATCH request on comments to edit them
 - POST, PATCH and DELETE articles
+
+---
