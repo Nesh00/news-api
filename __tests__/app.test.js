@@ -167,7 +167,7 @@ describe('/api/articles', () => {
     });
   });
   describe('POST', () => {
-    test.only('SUCCESSFUL REQUEST - adds article in table(articles)', () => {
+    test('SUCCESSFUL REQUEST - adds article in table(articles)', () => {
       return request(app)
         .post('/api/articles')
         .send({
@@ -305,7 +305,7 @@ describe('/api/articles/:article_id', () => {
         });
     });
   });
-  describe('PATCH', () => {
+  describe.only('PATCH', () => {
     test('SUCCESSFUL REQUEST - increases the votes in the selected article when inc_votes is > 0, and returns the article', () => {
       return request(app)
         .patch('/api/articles/1')
@@ -324,6 +324,28 @@ describe('/api/articles/:article_id', () => {
         .then((res) => {
           const { article } = res.body;
           expect(article.votes).toBe(47);
+        });
+    });
+    test('SUCCESSFUL REQUEST - updates an article', () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({
+          title: 'New Article',
+          topic: 'cats',
+          body: 'New article body',
+        })
+        .expect(201)
+        .then((res) => {
+          const { article } = res.body;
+          expect(article).toMatchObject({
+            article_id: 1,
+            title: 'New Article',
+            topic: 'cats',
+            author: 'butter_bridge',
+            body: 'New article body',
+            votes: 100,
+            created_at: expect.any(String),
+          });
         });
     });
     test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is non-existant', () => {
