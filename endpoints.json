@@ -24,6 +24,19 @@
       ]
     }
   },
+  "POST /api/articles": {
+    "description": "adds an article to articles table",
+    "propertiesAdded": ["title", "topic", "author", "body"],
+    "exampleResponse": {
+      "article_id": 13,
+      "title": "New Article",
+      "topic": "cats",
+      "author": "rogersop",
+      "body": "New article body",
+      "votes": 0,
+      "created_at": "2022-04-22T19:01:42.936Z"
+    }
+  },
   "GET /api/articles/:article_id": {
     "description": "serves an article object",
     ":article_id": "should be only a number, for this example is used (1)",
