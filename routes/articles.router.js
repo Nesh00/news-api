@@ -2,6 +2,7 @@ const express = require('express');
 const {
   getArticleById,
   patchArticle,
+  postArticle,
   getArticles,
   getCommentsByArticleId,
   postComment,
@@ -9,7 +10,7 @@ const {
 const { sanitazeParams } = require('../utils/sanitazeParams.util');
 const articlesRouter = express.Router();
 
-articlesRouter.route('/').get(getArticles);
+articlesRouter.route('/').get(getArticles).post(postArticle);
 
 articlesRouter
   .route('/:article_id')
