@@ -68,16 +68,42 @@ exports.fetchArticleById = async (article_id) => {
   return rows[0];
 };
 
-exports.editArticle = async (article_id, inc_votes) => {
-  const { rows } = await db.query(
-    `
-      UPDATE articles
-      SET votes = votes + $1
-      WHERE article_id = $2
-      RETURNING *;
-    `,
-    [inc_votes, article_id]
-  );
+exports.editArticle = async (article_id, title, topic, body, inc_votes) => {
+  const queryValues = [];
+  let queryStr = `
+  UPDATE articles
+  SET `;
+
+  queryValues.push(article_id);
+
+  if (inc_votes) {
+    queryValues.push(inc_votes);
+    queryStr += `votes = votes + $2`;
+  }
+
+  if (title) {
+    queryValues.push(title);
+    queryStr += `title = $2,`;
+  }
+
+  if (topic) {
+    queryValues.push(topic);
+    queryStr += `
+      topic = $3,`;
+  }
+
+  if (body) {
+    queryValues.push(body);
+    queryStr += `
+      body = $4`;
+  }
+
+  queryStr += `
+  WHERE article_id = $1
+  RETURNING *;
+  `;
+
+  const { rows } = await db.query(queryStr, queryValues);
 
   return rows[0];
 };

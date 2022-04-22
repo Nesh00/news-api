@@ -33,10 +33,7 @@ exports.postArticle = (req, res, next) => {
   const { title, topic, author, body } = req.body;
 
   return insertArticle({ title, topic, author, body })
-    .then((article) => {
-      console.log(article);
-      res.status(201).send({ article });
-    })
+    .then((article) => res.status(201).send({ article }))
     .catch(next);
 };
 
@@ -58,14 +55,14 @@ exports.getArticleById = (req, res, next) => {
 
 exports.patchArticle = (req, res, next) => {
   const { article_id } = req.params;
-  const { inc_votes } = req.body;
+  const { title, topic, body, inc_votes } = req.body;
 
   return checkDataIdExists('articles', 'article_id', article_id)
     .then((articleExists) => {
-      if (articleExists && inc_votes) {
-        return editArticle(article_id, inc_votes).then((article) => {
-          res.status(201).send({ article });
-        });
+      if (articleExists) {
+        return editArticle(article_id, title, topic, body, inc_votes).then(
+          (article) => res.status(201).send({ article })
+        );
       } else {
         return Promise.reject({ status: 404, message: 'Not Found' });
       }
