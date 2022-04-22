@@ -50,16 +50,32 @@
     }
   },
   "PATCH /api/articles/:article_id": {
-    "description": "increases/decreases the votes based on the passed value",
-    "article_id": "1",
-    "accepted object": "{ inc_votes: newVote } - newVote can be positive/negative number, in this case (20)",
-    "exampleResponse": {
-      "title": "Living in the shadow of a great man",
-      "topic": "mitch",
-      "author": "butter_bridge",
-      "body": "I find this existence challenging",
-      "created_at": "2020-07-09T20:11:00.000Z",
-      "votes": 120
+    "example1": {
+      "description": "increases/decreases the votes based on the passed value",
+      "article_id": "1",
+      "accepted object": "{ inc_votes: newVote } - newVote can be positive/negative number, in this case (20)",
+      "exampleResponse": {
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 120
+      }
+    },
+    "example2": {
+      "description": "updates an entire article",
+      "article_id": "1",
+      "accepted object": "{ title: 'New Article', topic: 'cats', body: 'New article body',}",
+      "exampleResponse": {
+        "article_id": 1,
+        "title": "New Article",
+        "topic": "cats",
+        "author": "butter_bridge",
+        "body": "New article body",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100
+      }
     }
   },
   "GET /api/articles/:article_id/comments": {

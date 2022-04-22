@@ -305,7 +305,7 @@ describe('/api/articles/:article_id', () => {
         });
     });
   });
-  describe.only('PATCH', () => {
+  describe('PATCH', () => {
     test('SUCCESSFUL REQUEST - increases the votes in the selected article when inc_votes is > 0, and returns the article', () => {
       return request(app)
         .patch('/api/articles/1')
