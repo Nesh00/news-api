@@ -166,6 +166,87 @@ describe('/api/articles', () => {
         });
     });
   });
+  describe('POST', () => {
+    test.only('SUCCESSFUL REQUEST - adds article in table(articles)', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({
+          title: 'New Article',
+          topic: 'cats',
+          author: 'rogersop',
+          body: 'New article body',
+        })
+        .expect(201)
+        .then((res) => {
+          const { article } = res.body;
+          expect(article).toMatchObject({
+            article_id: 13,
+            title: 'New Article',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'New article body',
+            votes: 0,
+            created_at: expect.any(String),
+          });
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when title is not defined', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({
+          topic: 'cats',
+          author: 'rogersop',
+          body: 'New article body',
+        })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when topic is not defined', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({
+          title: 'New Article',
+          author: 'rogersop',
+          body: 'New article body',
+        })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when author is not defined', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({
+          title: 'New Article',
+          topic: 'cats',
+          body: 'New article body',
+        })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns an error and message when body is not defined', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({
+          title: 'New Article',
+          topic: 'cats',
+          author: 'rogersop',
+        })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+  });
 });
 
 describe('/api/articles/:article_id', () => {
