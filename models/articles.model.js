@@ -82,6 +82,24 @@ exports.editArticle = async (article_id, inc_votes) => {
   return rows[0];
 };
 
+exports.insertArticle = async (articleData) => {
+  const articleValues = [Object.values(articleData)];
+  const queryFormat = format(
+    `
+    INSERT INTO articles
+    (title, topic, author, body)
+    VALUES
+    %L
+    RETURNING *;
+    `,
+    articleValues
+  );
+
+  const { rows } = await db.query(queryFormat);
+
+  return rows[0];
+};
+
 exports.fetchCommentsByArticleId = async (article_id, sort_by, order) => {
   const allowedSortBys = ['author', 'votes', 'created_at'];
   const allowedOrderBys = ['ASC', 'DESC'];

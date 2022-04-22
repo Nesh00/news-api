@@ -2,6 +2,7 @@ const {
   fetchArticles,
   fetchArticleById,
   editArticle,
+  insertArticle,
   fetchCommentsByArticleId,
   insertComment,
 } = require('../models/articles.model');
@@ -24,6 +25,17 @@ exports.getArticles = (req, res, next) => {
       } else {
         return Promise.reject({ status: 400, message: 'Bad Request' });
       }
+    })
+    .catch(next);
+};
+
+exports.postArticle = (req, res, next) => {
+  const { title, topic, author, body } = req.body;
+
+  return insertArticle({ title, topic, author, body })
+    .then((article) => {
+      console.log(article);
+      res.status(201).send({ article });
     })
     .catch(next);
 };
