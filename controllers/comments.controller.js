@@ -42,7 +42,7 @@ exports.deleteCommentById = (req, res, next) => {
 
 exports.patchCommentById = (req, res, next) => {
   const { comment_id } = req.params;
-  const { inc_votes } = req.body;
+  const { inc_votes, body } = req.body;
 
   return checkDataIdExists('comments', 'comment_id', comment_id)
     .then((rowCount) => {
@@ -51,7 +51,7 @@ exports.patchCommentById = (req, res, next) => {
       } else if (rowCount === 0) {
         return Promise.reject({ status: 400, message: 'Bad Request' });
       } else {
-        return editCommentById(comment_id, inc_votes).then((comment) => {
+        return editCommentById(comment_id, inc_votes, body).then((comment) => {
           res.status(200).send({ comment });
         });
       }

@@ -33,16 +33,27 @@ exports.removeCommentById = async (comment_id) => {
   return rowCount;
 };
 
-exports.editCommentById = async (comment_id, newVotes = 0) => {
-  const { rows } = await db.query(
-    `
-    UPDATE comments
-    SET votes = votes + $1
-    WHERE comment_id = $2
-    RETURNING *;
-    `,
-    [newVotes, comment_id]
-  );
+exports.editCommentById = async (comment_id, newVotes = 0, body) => {
+  let queryStr = `UPDATE comments
+  SET `;
+  const queryValues = [];
+  queryValues.push(comment_id);
+
+  queryValues.push(newVotes);
+  queryStr += `votes = votes + $2`;
+
+  if (body) {
+    queryValues.push(body);
+    queryStr += `, body = $3`;
+  }
+
+  queryStr += `
+  WHERE comment_id = $1
+  RETURNING *;
+  `;
+
+  const { rows } = await db.query(queryStr, queryValues);
+
   return rows[0];
 };
 

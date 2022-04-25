@@ -68,7 +68,7 @@ exports.fetchArticleById = async (article_id) => {
   return rows[0];
 };
 
-exports.editArticle = async (article_id, title, topic, body, inc_votes) => {
+exports.editArticle = async (article_id, title, topic, body, newVotes) => {
   const queryValues = [];
   let queryStr = `
   UPDATE articles
@@ -76,8 +76,8 @@ exports.editArticle = async (article_id, title, topic, body, inc_votes) => {
 
   queryValues.push(article_id);
 
-  if (inc_votes) {
-    queryValues.push(inc_votes);
+  if (newVotes) {
+    queryValues.push(newVotes);
     queryStr += `votes = votes + $2`;
   }
 

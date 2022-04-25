@@ -611,6 +611,16 @@ describe('/api/comments/:comment_id', () => {
           expect(comment.votes).toBe(16);
         });
     });
+    test('SUCCESSFUL REQUEST - will update the comment body, when new comment is sent', () => {
+      return request(app)
+        .patch('/api/comments/1')
+        .send({ body: 'new comment' })
+        .expect(200)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment.votes).toBe(16);
+        });
+    });
     test('UNSUCCESSFUL REQUEST - returns an error status & message, when the id is non-existent', () => {
       return request(app)
         .patch('/api/comments/654')
