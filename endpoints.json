@@ -120,19 +120,34 @@
     "comment_id": "any existant id number, in this case (1)"
   },
   "PATCH /api/comments/:comment_id": {
-    "description": "increases/decreases the votes on the selected comment",
-    "comment_id": "any existant id number, in this case (1)",
-    "exampleObject": { "inc_votes": -53 },
-    "exampleResponse": {
-      "comment_id": 1,
-      "article_id": 9,
-      "author": "butter_bridge",
-      "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-      "votes": -37,
-      "created_at": "2020-04-06T12:17:00.000Z"
+    "example1": {
+      "description": "increases/decreases the votes on the selected comment",
+      "comment_id": "any existant id number, in this case (1)",
+      "exampleObject": { "inc_votes": -53 },
+      "exampleResponse": {
+        "comment_id": 1,
+        "article_id": 9,
+        "author": "butter_bridge",
+        "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        "votes": -37,
+        "created_at": "2020-04-06T12:17:00.000Z"
+      }
+    },
+    "example2": {
+      "description": "updates the selected comment",
+      "comment_id": "any existant id number, in this case (1)",
+      "exampleObject": { "body": "new body text" },
+      "exampleResponse": {
+        "comment_id": 1,
+        "article_id": 9,
+        "author": "butter_bridge",
+        "body": "new body text",
+        "votes": 0,
+        "created_at": "2020-04-06T12:17:00.000Z"
+      }
     }
   },
-  "GET api/users": {
+  "GET /api/users": {
     "description": "serves array of objects with property username",
     "exampleResponse": [
       { "username": "butter_bridge" },
@@ -140,6 +155,19 @@
       { "username": "rogersop" },
       { "username": "lurker" }
     ]
+  },
+  "POST /api/users": {
+    "description": "creates new user account",
+    "exampleObject": {
+      "username": "cyclop",
+      "name": "luke",
+      "avatar_url": "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+    },
+    "exampleResponse": {
+      "username": "cyclop",
+      "name": "luke",
+      "avatar_url": "https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+    }
   },
   "GET /api/users/:username": {
     "description": "serves an object from the selected username",
