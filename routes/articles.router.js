@@ -4,9 +4,11 @@ const {
   patchArticle,
   postArticle,
   getArticles,
+} = require('../controllers/articles.controller');
+const {
   getCommentsByArticleId,
   postComment,
-} = require('../controllers/articles.controller');
+} = require('../controllers/comments.controller');
 const { sanitazeParams } = require('../utils/sanitazeParams.util');
 const articlesRouter = express.Router();
 

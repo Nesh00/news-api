@@ -3,12 +3,9 @@ const {
   fetchArticleById,
   editArticle,
   insertArticle,
-  fetchCommentsByArticleId,
-  insertComment,
 } = require('../models/articles.model');
 const { checkDataIdExists } = require('../utils/checkDataIdExists.util');
 const { checkQueries } = require('../utils/checkQueries.util');
-const { extractUsers } = require('../utils/extractUsers.util');
 
 exports.getArticles = (req, res, next) => {
   const { sort_by = 'created_at', order = 'DESC', topic } = req.query;
@@ -65,42 +62,6 @@ exports.patchArticle = (req, res, next) => {
         );
       } else {
         return Promise.reject({ status: 404, message: 'Not Found' });
-      }
-    })
-    .catch(next);
-};
-
-exports.getCommentsByArticleId = (req, res, next) => {
-  const { article_id } = req.params;
-  const { sort_by = 'created_at', order = 'DESC' } = req.query;
-
-  return checkDataIdExists('articles', 'article_id', article_id)
-    .then((articleExists) => {
-      if (articleExists) {
-        return fetchCommentsByArticleId(article_id, sort_by, order).then(
-          (comments) => {
-            res.status(200).send({ comments });
-          }
-        );
-      } else {
-        return Promise.reject({ status: 404, message: 'Not Found' });
-      }
-    })
-    .catch(next);
-};
-
-exports.postComment = (req, res, next) => {
-  const { article_id } = req.params;
-  const { username, body } = req.body;
-
-  return extractUsers()
-    .then((users) => {
-      if (users.includes(username) && body.length > 0 && article_id) {
-        return insertComment({ article_id, username, body }).then((comment) => {
-          res.status(201).send({ comment });
-        });
-      } else {
-        return Promise.reject({ status: 400, message: 'Bad Request' });
       }
     })
     .catch(next);

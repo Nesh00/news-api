@@ -669,7 +669,7 @@ describe('/api/users', () => {
         });
     });
   });
-  describe.only('POST', () => {
+  describe('POST', () => {
     test('SUCCESSFUL REQUEST - adds new user to users table', () => {
       return request(app)
         .post('/api/users')
