@@ -1,9 +1,21 @@
-const { fetchUsers, fetchUserByUsername } = require('../models/users.model');
+const {
+  fetchUsers,
+  fetchUserByUsername,
+  createUser,
+} = require('../models/users.model');
 const { checkDataIdExists } = require('../utils/checkDataIdExists.util');
 
 exports.getUsers = (req, res, next) => {
   return fetchUsers()
     .then((users) => res.status(200).send({ users }))
+    .catch(next);
+};
+
+exports.addUser = (req, res, next) => {
+  const { username, name, avatar_url } = req.body;
+
+  return createUser(username, name, avatar_url)
+    .then((user) => res.status(201).send({ user }))
     .catch(next);
 };
 
