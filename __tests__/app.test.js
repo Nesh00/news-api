@@ -669,6 +669,69 @@ describe('/api/users', () => {
         });
     });
   });
+  describe.only('POST', () => {
+    test('SUCCESSFUL REQUEST - adds new user to users table', () => {
+      return request(app)
+        .post('/api/users')
+        .send({
+          username: 'cyclop',
+          name: 'luke',
+          avatar_url:
+            'https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
+        })
+        .expect(201)
+        .then((res) => {
+          const { user } = res.body;
+          expect(user).toMatchObject({
+            username: 'cyclop',
+            name: 'luke',
+            avatar_url:
+              'https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
+          });
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns error message when username is undefined', () => {
+      return request(app)
+        .post('/api/users')
+        .send({
+          name: 'luke',
+          avatar_url:
+            'https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
+        })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns error message when name is undefined', () => {
+      return request(app)
+        .post('/api/users')
+        .send({
+          username: 'cyclop',
+          avatar_url:
+            'https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
+        })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+    test('UNSUCCESSFUL REQUEST - returns error message when avatar_url is undefined', () => {
+      return request(app)
+        .post('/api/users')
+        .send({
+          username: 'cyclop',
+          name: 'luke',
+        })
+        .expect(400)
+        .then((res) => {
+          const { message } = res.body;
+          expect(message).toBe('Bad Request');
+        });
+    });
+  });
 });
 
 describe('/api/users/:username', () => {
